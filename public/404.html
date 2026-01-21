@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Redirecting…</title>
+    <!--
+      SPA redirect for GitHub Pages (BrowserRouter).
+      Source idea: https://github.com/rafgraph/spa-github-pages
+    -->
+    <script>
+      ;(() => {
+        var l = window.location
+        // Works for both root deploy and GitHub Pages "/<repo>/" deploy.
+        var parts = l.pathname.split('/').filter(Boolean)
+        var base = parts.length ? `/${parts[0]}` : ''
+        var restPath = `/${parts.slice(1).join('/')}`
+        var target = `${l.origin + base}/?p=${encodeURIComponent(restPath + l.search + l.hash)}`
+        l.replace(target)
+      })()
+    </script>
+  </head>
+  <body>
+    Redirecting…
+  </body>
+</html>
+
