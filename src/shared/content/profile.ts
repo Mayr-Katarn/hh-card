@@ -101,6 +101,6 @@ export const profile: Profile = {
   contacts: [
     { label: 'Телефон', value: '+7 (923) 234-10-36', href: 'tel:+79232341036' },
     { label: 'Email', value: 'redtein77@live.com', href: 'mailto:redtein77@live.com' },
-    { label: 'VK', value: 'vk.com/mayr_white', href: 'https://vk.com/mayr_white' },
+    { label: 'VK', value: 'vk.com/mayr_katarn', href: 'https://vk.com/mayr_katarn' },
   ],
 }

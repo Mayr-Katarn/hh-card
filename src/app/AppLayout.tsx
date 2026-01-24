@@ -1,9 +1,9 @@
 import { Button, CssBaseline, Stack } from '@mui/material'
 import { ThemeProvider } from '@mui/material/styles'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
-import { Outlet, Link as RouterLink } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { profile } from '../shared/content/profile'
 import { LanguageSwitch } from '../widgets/LanguageSwitch'
 import { AppShell } from './AppShell'
@@ -11,6 +11,8 @@ import { createAppTheme } from './theme'
 
 export const AppLayout = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const [mode, setMode] = useState<'light' | 'dark'>(() => {
     const saved = localStorage.getItem('themeMode')
@@ -23,19 +25,39 @@ export const AppLayout = () => {
 
   const theme = useMemo(() => createAppTheme(mode), [mode])
 
+  const scrollToSection = useCallback(
+    (sectionId: string) => {
+      const scrollTo = () => {
+        const element = document.getElementById(sectionId)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' })
+        }
+      }
+
+      if (location.pathname !== '/') {
+        navigate('/')
+        // Ждём рендера главной страницы, потом прокручиваем
+        setTimeout(scrollTo, 100)
+      } else {
+        scrollTo()
+      }
+    },
+    [location.pathname, navigate]
+  )
+
   const headerRightSlot = (
-    <Stack direction="row" spacing={1} alignItems="center" sx={{ display: { xs: 'none', sm: 'flex' } }}>
-      <Button component={RouterLink} to="/" color="inherit">
+    <Stack direction="row" spacing={0.5} alignItems="center" sx={{ display: { xs: 'none', sm: 'flex' } }}>
+      <Button variant="text" onClick={() => scrollToSection('home')}>
         {t('navHome')}
       </Button>
-      <Button component={RouterLink} to="/projects" color="inherit">
+      <Button variant="text" onClick={() => scrollToSection('projects')}>
         {t('navProjects')}
       </Button>
-      <Button component={RouterLink} to="/cv" color="inherit">
-        {t('navCv')}
-      </Button>
-      <Button component={RouterLink} to="/contacts" color="inherit">
+      <Button variant="text" onClick={() => scrollToSection('contacts')}>
         {t('navContacts')}
+      </Button>
+      <Button variant="text" href="/cv.pdf" target="_blank">
+        {t('navCv')}
       </Button>
       <LanguageSwitch />
     </Stack>
